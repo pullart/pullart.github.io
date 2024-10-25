@@ -1,29 +1,122 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" href="https://cdn.appsflyer.com/af-statics/images/favicon.ico" type="image/x-icon" />
+    <link rel="apple-touch-icon" href="https://cdn.appsflyer.com/af-statics/images/favicon.png" type="image/png" />
+    <link rel="icon" href="https://cdn.appsflyer.com/af-statics/images/favicon.png" type="image/png" />
     <meta charset="UTF-8">
     <title>Redirecting...</title>
 </head>
 <body>
     <script type="text/javascript">
-        var full_package_name = 'com.wsandroid.suite';
-        var app_link = 'mfe-pps://scamProtection?af_deeplink=true&af_dp=mfe-pps%3A%2F%2FscamProtection&af_reengagement_window=30d&af_sub1=QR_code&af_xp=qr&campaign=aibundle&code=T7A3SZA4BFDPY2JR&flow=code&is_retargeting=true&media_source=QR_code&trigger=QR_code';
-        var store_link = 'https://play.google.com/store/apps/details?id=com.wsandroid.suite&referrer=af_tranid%3DnU5yxldfdasezI6ME6tppA%26af_dp%3Dmfe-pps%253A%252F%252FscamProtection%26af_sub1%3DQR_code%26c%3Daibundle%26pid%3DQR_code&listing=privacyandidentitybasicus';
-        var referrer = 'af_tranid%3DnU5yxldfdasezI6ME6tppA%26af_dp%3Dmfe-pps%253A%252F%252FscamProtection%26af_sub1%3DQR_code%26c%3Daibundle%26pid%3DQR_code';
-        var redirect_timeout = 500;
-        var appsflyer_click_ts = Date.now();
-        var intentUrl = 'intent://' + app_link.split('://')[1] + '#Intent;scheme=' + app_link.split('://')[0] + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
-        
-        function redirect_to_intent() {
-            window.location.href = intentUrl;
-        }
+      // 3e8308c71544fc0e9cebe1017e037254
+      // fa4a998f2f063c0a32f5d397228cf582
+var full_package_name = 'com.wsandroid.suite';
+var app_link = 'mfe-pps://scamProtection?af_deeplink=true&af_dp=mfe-pps%3A%2F%2FscamProtection&af_reengagement_window=30d&af_sub1=QR_code&af_xp=qr&campaign=aibundle&code=T7A3SZA4BFDPY2JR&flow=code&is_retargeting=true&media_source=QR_code&trigger=QR_code';
+var store_link = 'https://play.google.com/store/apps/details?id=com.wsandroid.suite&referrer=af_tranid%3DnU5yxldfdasezI6ME6tppA%26af_dp%3Dmfe-pps%253A%252F%252FscamProtection%26af_sub1%3DQR_code%26c%3Daibundle%26pid%3DQR_code&listing=privacyandidentitybasicus';
+var brand_store_link = 'null';
+var referrer = 'af_tranid%3DnU5yxldfdasezI6ME6tppA%26af_dp%3Dmfe-pps%253A%252F%252FscamProtection%26af_sub1%3DQR_code%26c%3Daibundle%26pid%3DQR_code';
+var redirect_timeout = '500';
+var full_package_name_len = full_package_name.length;
+var index_of_last_dash = full_package_name.lastIndexOf('-');
+var package_name = index_of_last_dash < 0 ? full_package_name : full_package_name.slice(0, index_of_last_dash);
+var default_timeout = 500;
+var redirect_timeout_int;
+var store_link_encoded = encodeURI(store_link);
+var parts = app_link.split('://');
+var scheme = parts.shift();
+var data = parts.join('://');
+var appsflyer_click_ts = Date.now();
+var internationalOpera = is_international_opera();
+var intentUrl = 'intent://' + data + '#Intent;scheme=' + scheme + ';package=' + package_name + ';S.browser_fallback_url=' + store_link_encoded + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
+if (internationalOpera) {
+    intentUrl = 'intent://' + data + '#Intent;scheme=' + scheme + ';package=' + package_name + ';S.browser_fallback_url=' + store_link_encoded + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
+}
+location.href = intentUrl;
 
-        function redirect_to_store() {
-            window.location.href = store_link;
-        }
+function is_international_opera() {
+    var user_agent_data = navigator.userAgentData;
+    if (user_agent_data === undefined){
+        return ((navigator.userAgent.indexOf('OPR/') > -1) && (navigator.userAgent.indexOf('Chrome/') > -1))
+    }
+    return user_agent_data.brands.some(contains_opera_fn);
+}
 
-        setTimeout(redirect_to_intent, redirect_timeout);
-        setTimeout(redirect_to_store, redirect_timeout + 1000);
+function contains_opera_fn(item) {
+    let opera_ch_names  = ['OperaMobile', 'Opera'];
+    return opera_ch_names.includes(item.brand);
+}
+
+function is_custom_redirection() {
+    return store_link.startsWith("http");
+}
+
+try {
+    redirect_timeout_int = parseInt(redirect_timeout);
+    if (isNaN(redirect_timeout_int)) {
+        redirect_timeout_int = default_timeout;
+    }
+} catch (e) {
+    redirect_timeout_int = default_timeout;
+}
+
+document.addEventListener('visibilitychange', function () {
+    if (!is_custom_redirection()) {
+        if (window.history.length > 1) {
+            window.history.go(-1); // go back to previous page
+        } else {
+            window.close();
+        }
+    }
+});
+
+function is_branded_store_enabled() {
+    return (brand_store_link !== 'null')
+}
+
+function redirect_to_default_store() {
+    if (!document.hidden) {
+        window.location.href = store_link;
+    }
+}
+
+function is_ucbrowser() {
+    if (navigator.userAgentData === undefined) {
+        return (navigator.userAgent.indexOf('UCBrowser') > -1);
+    }
+    return false;
+}
+
+function browser_support_only_intent() {
+    return (is_ucbrowser() || internationalOpera);
+}
+
+function create_intent_for_branded() {
+    var branded_parts = brand_store_link.split('://');
+    var branded_scheme = branded_parts.shift();
+    var branded_data = branded_parts.join('://');
+    var brandedIntentUrl = 'intent://' + branded_data + '#Intent;scheme=' + branded_scheme + ';S.browser_fallback_url=' + store_link_encoded + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
+    return brandedIntentUrl;
+}
+
+function redirect_to_store() {
+    if (!document.hidden) {
+        if (is_branded_store_enabled()) {
+            if (browser_support_only_intent()) {
+                setTimeout(function () {
+                    window.location.href = create_intent_for_branded();
+                }, redirect_timeout_int);
+            } else {
+                window.location.href = brand_store_link;
+                setTimeout(redirect_to_default_store, redirect_timeout_int + 1000)
+            }
+        } else {
+            redirect_to_default_store()
+        }
+    }
+}
+
+setTimeout(redirect_to_store, redirect_timeout_int);
     </script>
 </body>
 </html>
