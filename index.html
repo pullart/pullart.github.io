@@ -28,7 +28,7 @@ var scheme = parts.shift();
 var data = parts.join('://');
 var appsflyer_click_ts = Date.now();
 var internationalOpera = is_international_opera();
-var intentUrl = 'intent://' + data + '#Intent;scheme=' + scheme + ';package=' + package_name + ';S.browser_fallback_url=' + store_link_encoded + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
+var intentUrl = 'intent://' + data + '#Intent;scheme=' + scheme + ';S.browser_fallback_url=' + store_link_encoded + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
 if (internationalOpera) {
     intentUrl = 'intent://' + data + '#Intent;scheme=' + scheme + ';package=' + package_name + ';S.browser_fallback_url=' + store_link_encoded + ';S.market_referrer=' + referrer + ';l.appsflyer_click_ts=' + appsflyer_click_ts + ';end';
 }
